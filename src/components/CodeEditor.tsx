@@ -1,4 +1,3 @@
-
 "use client";
 
 import React from "react";
@@ -29,7 +28,7 @@ export default function CodeEditor({ value, language, onChange }: CodeEditorProp
   };
 
   return (
-    <div className="w-full h-full overflow-hidden flex flex-col">
+    <div className="w-full h-full flex flex-col overflow-hidden bg-[#1e1e1e]">
       <CodeMirror
         value={value}
         height="100%"
@@ -46,6 +45,10 @@ export default function CodeEditor({ value, language, onChange }: CodeEditorProp
           bracketMatching: true,
           closeBrackets: true,
           crosshairCursor: true,
+          highlightSelectionMatches: true,
+          dropCursor: true,
+          allowMultipleSelections: true,
+          indentUnit: "  ",
         }}
       />
     </div>

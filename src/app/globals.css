@@ -1,4 +1,3 @@
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -16,7 +15,7 @@
     --secondary: 213 12% 22%;
     --secondary-foreground: 0 0% 100%;
     --muted: 213 12% 22%;
-    --muted-foreground: 213 12% 65%;
+    --muted-foreground: 213 12 65%;
     --accent: 240 68% 70%;
     --accent-foreground: 0 0% 100%;
     --destructive: 0 84.2% 60.2%;
@@ -38,16 +37,19 @@
   }
 }
 
+/* CodeMirror specific styling */
 .cm-editor {
   height: 100% !important;
+  outline: none !important;
 }
 
 .cm-scroller {
   font-family: 'Source Code Pro', monospace !important;
   font-size: 14px !important;
+  overflow: auto !important;
 }
 
-/* Custom Scrollbar */
+/* Custom Scrollbar for the whole app */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -59,4 +61,25 @@
 
 ::-webkit-scrollbar-thumb {
   @apply bg-muted rounded-full hover:bg-muted-foreground/50 transition-colors;
+}
+
+/* Specific scrollbar styling for CodeMirror to make it more comfortable */
+.cm-scroller::-webkit-scrollbar {
+  width: 10px;
+}
+
+.cm-scroller::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.cm-scroller::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.cm-scroller::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--primary) / 0.5);
+  background-clip: content-box;
 }

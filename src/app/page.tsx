@@ -6,7 +6,6 @@ import {
   Play, 
   Code, 
   Eye, 
-  Trash2, 
   Settings, 
   Zap, 
   Columns, 
@@ -20,26 +19,16 @@ import {
   Search,
   Github as GithubIcon,
   Layers,
-  ChevronRight,
   ChevronDown,
-  Info
+  Download
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { 
-  DropdownMenu, 
-  DropdownMenuContent, 
-  DropdownMenuItem, 
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-  DropdownMenuLabel
-} from "@/components/ui/dropdown-menu";
 import { usePersistedState } from "@/hooks/use-persisted-state";
 import PreviewFrame from "@/components/PreviewFrame";
 import AIChatPanel from "@/components/AIChatPanel";
 import { cn } from "@/lib/utils";
 
-// Dynamically import CodeEditor to prevent SSR errors
 const CodeEditor = dynamic(() => import("@/components/CodeEditor"), {
   ssr: false,
   loading: () => <div className="w-full h-full bg-[#1e1e1e] flex items-center justify-center text-muted-foreground">Loading editor...</div>
@@ -145,15 +134,38 @@ export default function CodeCanvas() {
     };
   }, [isResizing, handleMouseMove, handleMouseUp]);
 
-  const clearProject = () => {
-    if (confirm(language === "es" ? "¿Estás seguro?" : "Are you sure?")) {
-      setHtml(""); setCss(""); setJs("");
-    }
+  const handleDeploy = () => {
+    const download = (filename: string, text: string) => {
+      const element = document.createElement("a");
+      element.setAttribute("href", "data:text/plain;charset=utf-8," + encodeURIComponent(text));
+      element.setAttribute("download", filename);
+      element.style.display = "none";
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+    };
+
+    const indexHtmlContent = `<!DOCTYPE html>
+<html lang="${language}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodeCanvas Export</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    ${html}
+    <script src="script.js"></script>
+</body>
+</html>`;
+
+    download("index.html", indexHtmlContent);
+    download("styles.css", css);
+    download("script.js", js);
   };
 
   return (
     <div className="flex h-screen w-full bg-[#0d0d0d] text-foreground overflow-hidden font-body">
-      {/* Activity Bar (Vertical Left) */}
       <aside className="w-12 bg-[#181818] border-r border-white/5 flex flex-col items-center py-4 gap-4 z-50">
         <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center mb-2">
           <Code className="text-primary w-5 h-5" />
@@ -186,7 +198,6 @@ export default function CodeCanvas() {
         </div>
       </aside>
 
-      {/* Explorer Side Bar */}
       {isExplorerOpen && (
         <aside className="w-60 bg-[#121212] border-r border-white/5 flex flex-col animate-in slide-in-from-left duration-200">
           <div className="h-10 flex items-center px-4 text-[10px] font-bold uppercase tracking-widest text-muted-foreground">
@@ -223,9 +234,7 @@ export default function CodeCanvas() {
         </aside>
       )}
 
-      {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Top Header/Tabs */}
         <header className="h-10 bg-[#121212] border-b border-white/5 flex items-center justify-between px-2">
           <div className="flex h-full items-center">
             {["html", "css", "javascript"].map((tab) => (
@@ -261,16 +270,18 @@ export default function CodeCanvas() {
               <Globe className="w-3 h-3 mr-1" />
               {language === "es" ? "ES" : "EN"}
             </Button>
-            <Button size="sm" className="h-7 bg-primary text-primary-foreground text-[10px] font-bold px-3">
-              <Zap className="w-3 h-3 mr-1" />
+            <Button 
+              size="sm" 
+              onClick={handleDeploy}
+              className="h-7 bg-primary text-primary-foreground text-[10px] font-bold px-3 transition-transform active:scale-95"
+            >
+              <Download className="w-3 h-3 mr-1" />
               {language === "es" ? "DESPLEGAR" : "DEPLOY"}
             </Button>
           </div>
         </header>
 
-        {/* Workspace Panels */}
         <div className={cn("flex-1 flex relative", layout === "split-h" ? "flex-col" : "flex-row")}>
-          {/* Editor Area */}
           <div 
             className="overflow-hidden bg-[#1e1e1e]" 
             style={{ 
@@ -285,7 +296,6 @@ export default function CodeCanvas() {
             </div>
           </div>
 
-          {/* Draggable Divider */}
           <div 
             className={cn(
               "z-30 flex items-center justify-center hover:bg-primary/40 transition-colors select-none bg-black/40",
@@ -296,7 +306,6 @@ export default function CodeCanvas() {
             <div className={cn("bg-muted-foreground/20 rounded-full", layout === "split-v" ? "w-0.5 h-12" : "h-0.5 w-12")} />
           </div>
 
-          {/* Preview Area */}
           <div 
             className="flex-1 bg-[#0d0d0d] flex flex-col p-4 overflow-hidden"
             style={{ 
@@ -328,7 +337,6 @@ export default function CodeCanvas() {
           </div>
         </div>
 
-        {/* Professional Status Bar */}
         <footer className="h-6 bg-[#007acc] text-white flex items-center justify-between px-3 text-[10px] font-medium shrink-0">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1 hover:bg-white/10 px-2 h-full cursor-pointer transition-colors">

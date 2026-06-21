@@ -2,6 +2,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useMemo } from "react";
+import dynamic from "next/dynamic";
 import { 
   Layout, 
   Play, 
@@ -32,9 +33,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
 import { usePersistedState } from "@/hooks/use-persisted-state";
-import CodeEditor from "@/components/CodeEditor";
 import PreviewFrame from "@/components/PreviewFrame";
 import AIChatPanel from "@/components/AIChatPanel";
+
+// Dynamically import CodeEditor to prevent SSR errors with CodeMirror
+const CodeEditor = dynamic(() => import("@/components/CodeEditor"), {
+  ssr: false,
+  loading: () => <div className="w-full h-full bg-card flex items-center justify-center text-muted-foreground">Loading editor...</div>
+});
 
 type ViewLayout = "split-v" | "split-h" | "preview-only" | "code-only";
 type DevicePreview = "mobile" | "tablet" | "desktop";
@@ -134,18 +140,6 @@ export default function CodeCanvas() {
       setCss("");
       setJs("");
     }
-  };
-
-  const currentCode = useMemo(() => {
-    if (activeTab === "html") return html;
-    if (activeTab === "css") return css;
-    return js;
-  }, [activeTab, html, css, js]);
-
-  const handleCodeChange = (value: string) => {
-    if (activeTab === "html") setHtml(value);
-    else if (activeTab === "css") setCss(value);
-    else setJs(value);
   };
 
   return (
@@ -321,7 +315,7 @@ export default function CodeCanvas() {
         </div>
       </main>
 
-      {/* AI Assistant Sheet/Panel */}
+      {/* AI Assistant Panel */}
       <AIChatPanel 
         isOpen={isAiOpen} 
         onClose={() => setIsAiOpen(false)} 

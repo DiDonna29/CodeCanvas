@@ -28,7 +28,7 @@ export default function CodeEditor({ value, language, onChange }: CodeEditorProp
   };
 
   return (
-    <div className="w-full h-full flex flex-col overflow-hidden bg-[#1e1e1e]">
+    <div className="w-full h-full flex flex-col overflow-hidden">
       <CodeMirror
         value={value}
         height="100%"

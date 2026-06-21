@@ -4,25 +4,25 @@
 
 @layer base {
   :root {
-    --background: 213 12% 16%;
-    --foreground: 0 0% 100%;
-    --card: 213 12% 12%;
-    --card-foreground: 0 0% 100%;
-    --popover: 213 12% 14%;
-    --popover-foreground: 0 0% 100%;
-    --primary: 210 74% 73%;
-    --primary-foreground: 213 12% 16%;
-    --secondary: 213 12% 22%;
-    --secondary-foreground: 0 0% 100%;
-    --muted: 213 12% 22%;
-    --muted-foreground: 213 12 65%;
-    --accent: 240 68% 70%;
-    --accent-foreground: 0 0% 100%;
-    --destructive: 0 84.2% 60.2%;
+    --background: 240 5% 10%;
+    --foreground: 0 0% 98%;
+    --card: 240 5% 12%;
+    --card-foreground: 0 0% 98%;
+    --popover: 240 5% 15%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 180 100% 45%;
+    --primary-foreground: 240 5% 10%;
+    --secondary: 240 4% 16%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 4% 16%;
+    --muted-foreground: 240 5% 65%;
+    --accent: 240 4% 20%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
-    --border: 213 12% 25%;
-    --input: 213 12% 25%;
-    --ring: 210 74% 73%;
+    --border: 240 5% 20%;
+    --input: 240 5% 20%;
+    --ring: 180 100% 45%;
     --radius: 0.5rem;
   }
 }
@@ -41,6 +41,7 @@
 .cm-editor {
   height: 100% !important;
   outline: none !important;
+  background-color: transparent !important;
 }
 
 .cm-scroller {
@@ -49,10 +50,10 @@
   overflow: auto !important;
 }
 
-/* Custom Scrollbar for the whole app */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -60,16 +61,11 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-muted rounded-full hover:bg-muted-foreground/50 transition-colors;
+  @apply bg-accent rounded-full border-2 border-transparent bg-clip-content;
 }
 
-/* Specific scrollbar styling for CodeMirror to make it more comfortable */
-.cm-scroller::-webkit-scrollbar {
-  width: 10px;
-}
-
-.cm-scroller::-webkit-scrollbar-track {
-  background: transparent;
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-muted-foreground/50;
 }
 
 .cm-scroller::-webkit-scrollbar-thumb {
@@ -79,7 +75,11 @@
   background-clip: content-box;
 }
 
-.cm-scroller::-webkit-scrollbar-thumb:hover {
-  background: hsl(var(--primary) / 0.5);
-  background-clip: content-box;
+.glass-panel {
+  @apply bg-card/50 backdrop-blur-md border border-white/5;
+}
+
+/* Tab Animation */
+.tab-active {
+  @apply relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary;
 }

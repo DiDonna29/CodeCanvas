@@ -32,12 +32,15 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  // En Next.js 15, allowedDevOrigins se configura directamente si el validador lo solicita fuera de experimental
   experimental: {
-    allowedDevOrigins: [
-      '6000-firebase-studio-1782014317246.cluster-gizzoza7hzhfyxzo5d76y3flkw.cloudworkstations.dev',
-      '*.cloudworkstations.dev'
-    ],
+    // Mantener otras opciones experimentales si las hubiera
   },
+  // @ts-ignore - Algunas versiones de Next.js 15 requieren esto en la raíz para entornos de desarrollo remotos
+  allowedDevOrigins: [
+    '6000-firebase-studio-1782014317246.cluster-gizzoza7hzhfyxzo5d76y3flkw.cloudworkstations.dev',
+    '*.cloudworkstations.dev'
+  ],
 };
 
 export default nextConfig;

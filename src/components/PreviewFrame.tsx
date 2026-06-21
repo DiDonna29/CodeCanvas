@@ -3,14 +3,18 @@
 
 import React, { useEffect, useRef } from "react";
 
+interface VirtualFile {
+  id: string;
+  name: string;
+  content: string;
+}
+
 interface PreviewFrameProps {
-  html: string;
-  css: string;
-  js: string;
+  files: VirtualFile[];
   device: "mobile" | "tablet" | "desktop";
 }
 
-export default function PreviewFrame({ html, css, js, device }: PreviewFrameProps) {
+export default function PreviewFrame({ files, device }: PreviewFrameProps) {
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   useEffect(() => {
@@ -18,29 +22,31 @@ export default function PreviewFrame({ html, css, js, device }: PreviewFrameProp
       const iframe = iframeRef.current;
       if (!iframe) return;
 
-      const combinedContent = `
-        <!DOCTYPE html>
-        <html>
-          <head>
-            <meta charset="utf-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1">
-            <style>
-              ${css}
-            </style>
-          </head>
-          <body>
-            ${html}
-            <script>
-              try {
-                ${js}
-              } catch (err) {
-                console.error('JS Error:', err);
-              }
-            </script>
-          </body>
-        </html>
-      `;
+      const indexHtml = files.find(f => f.name === "index.html")?.content || "<body><h1>No index.html found</h1></body>";
+      const cssContent = files.filter(f => f.name.endsWith(".css")).map(f => f.content).join("\n");
+      const jsContent = files.filter(f => f.name.endsWith(".js")).map(f => f.content).join("\n");
 
+      // Injecting CSS and JS into the index.html content
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(indexHtml, "text/html");
+
+      // Inject CSS
+      const styleTag = doc.createElement("style");
+      styleTag.textContent = cssContent;
+      doc.head.appendChild(styleTag);
+
+      // Inject JS
+      const scriptTag = doc.createElement("script");
+      scriptTag.textContent = `
+        try {
+          ${jsContent}
+        } catch (err) {
+          console.error('JS Error:', err);
+        }
+      `;
+      doc.body.appendChild(scriptTag);
+
+      const combinedContent = doc.documentElement.outerHTML;
       const blob = new Blob([combinedContent], { type: "text/html" });
       const url = URL.createObjectURL(blob);
       iframe.src = url;
@@ -48,9 +54,9 @@ export default function PreviewFrame({ html, css, js, device }: PreviewFrameProp
       return () => URL.revokeObjectURL(url);
     };
 
-    const timeout = setTimeout(updatePreview, 300);
+    const timeout = setTimeout(updatePreview, 500);
     return () => clearTimeout(timeout);
-  }, [html, css, js]);
+  }, [files]);
 
   const getDeviceStyles = () => {
     switch (device) {
@@ -64,7 +70,7 @@ export default function PreviewFrame({ html, css, js, device }: PreviewFrameProp
   };
 
   return (
-    <div className="w-full h-full flex items-center justify-center overflow-auto p-4">
+    <div className="w-full h-full flex items-center justify-center overflow-auto p-4 bg-background">
       <div 
         className="bg-white transition-all duration-300 shadow-2xl relative"
         style={getDeviceStyles()}
@@ -75,7 +81,6 @@ export default function PreviewFrame({ html, css, js, device }: PreviewFrameProp
           className="w-full h-full"
           sandbox="allow-scripts allow-modals"
         />
-        {/* Device elements decoration */}
         {device !== "desktop" && (
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-5 bg-[#333] rounded-b-xl flex items-center justify-center">
             <div className="w-1.5 h-1.5 rounded-full bg-[#555] mr-1"></div>

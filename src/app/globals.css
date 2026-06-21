@@ -1,9 +1,33 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
+    --background: 0 0% 100%;
+    --foreground: 240 10% 3.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 3.9%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 3.9%;
+    --primary: 180 100% 40%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 180 100% 40%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
     --background: 240 5% 10%;
     --foreground: 0 0% 98%;
     --card: 240 5% 12%;
@@ -23,7 +47,6 @@
     --border: 240 5% 20%;
     --input: 240 5% 20%;
     --ring: 180 100% 45%;
-    --radius: 0.5rem;
   }
 }
 
@@ -37,7 +60,6 @@
   }
 }
 
-/* CodeMirror specific styling */
 .cm-editor {
   height: 100% !important;
   outline: none !important;
@@ -50,10 +72,9 @@
   overflow: auto !important;
 }
 
-/* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -68,18 +89,6 @@
   @apply bg-muted-foreground/50;
 }
 
-.cm-scroller::-webkit-scrollbar-thumb {
-  background: hsl(var(--muted-foreground) / 0.3);
-  border-radius: 10px;
-  border: 2px solid transparent;
-  background-clip: content-box;
-}
-
 .glass-panel {
   @apply bg-card/50 backdrop-blur-md border border-white/5;
-}
-
-/* Tab Animation */
-.tab-active {
-  @apply relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-primary;
 }

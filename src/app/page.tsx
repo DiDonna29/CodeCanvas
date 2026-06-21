@@ -1,25 +1,22 @@
 
 "use client";
 
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { 
-  Layout, 
   Play, 
   Code, 
   Eye, 
   Trash2, 
   Settings, 
   Zap, 
-  ChevronRight, 
-  ChevronDown,
-  Columns,
-  Rows,
-  Maximize,
-  Sparkles,
-  Smartphone,
-  Tablet,
-  Monitor
+  Columns, 
+  Rows, 
+  Sparkles, 
+  Smartphone, 
+  Tablet, 
+  Monitor,
+  Globe
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -35,6 +32,7 @@ import { Separator } from "@/components/ui/separator";
 import { usePersistedState } from "@/hooks/use-persisted-state";
 import PreviewFrame from "@/components/PreviewFrame";
 import AIChatPanel from "@/components/AIChatPanel";
+import Footer from "@/components/Footer";
 
 // Dynamically import CodeEditor to prevent SSR errors with CodeMirror
 const CodeEditor = dynamic(() => import("@/components/CodeEditor"), {
@@ -44,6 +42,7 @@ const CodeEditor = dynamic(() => import("@/components/CodeEditor"), {
 
 type ViewLayout = "split-v" | "split-h" | "preview-only" | "code-only";
 type DevicePreview = "mobile" | "tablet" | "desktop";
+type Language = "es" | "en";
 
 const DEFAULT_HTML = `<!-- Welcome to CodeCanvas -->
 <div class="container">
@@ -98,6 +97,7 @@ export default function CodeCanvas() {
   const [html, setHtml] = usePersistedState("cc-html", DEFAULT_HTML);
   const [css, setCss] = usePersistedState("cc-css", DEFAULT_CSS);
   const [js, setJs] = usePersistedState("cc-js", DEFAULT_JS);
+  const [language, setLanguage] = usePersistedState<Language>("cc-lang", "es");
   
   const [activeTab, setActiveTab] = useState("html");
   const [layout, setLayout] = useState<ViewLayout>("split-v");
@@ -135,7 +135,7 @@ export default function CodeCanvas() {
   }, [isResizing, handleMouseMove, handleMouseUp]);
 
   const clearProject = () => {
-    if (confirm("Are you sure you want to clear your code? This cannot be undone.")) {
+    if (confirm(language === "es" ? "¿Estás seguro de que quieres borrar todo el código?" : "Are you sure you want to clear your code?")) {
       setHtml("");
       setCss("");
       setJs("");
@@ -157,16 +157,27 @@ export default function CodeCanvas() {
           <div className="flex items-center gap-1">
             <Button variant="ghost" size="sm" onClick={() => setLayout("split-v")} className={layout === "split-v" ? "bg-accent/20 text-accent" : ""}>
               <Columns className="w-4 h-4 mr-2" />
-              <span className="hidden lg:inline">Side-by-Side</span>
+              <span className="hidden lg:inline">{language === "es" ? "Vista Vertical" : "Side-by-Side"}</span>
             </Button>
             <Button variant="ghost" size="sm" onClick={() => setLayout("split-h")} className={layout === "split-h" ? "bg-accent/20 text-accent" : ""}>
               <Rows className="w-4 h-4 mr-2" />
-              <span className="hidden lg:inline">Stack</span>
+              <span className="hidden lg:inline">{language === "es" ? "Vista Apilada" : "Stack"}</span>
             </Button>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Language Toggle */}
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="text-xs font-bold"
+            onClick={() => setLanguage(language === "es" ? "en" : "es")}
+          >
+            <Globe className="w-4 h-4 mr-2" />
+            {language === "es" ? "ES" : "EN"}
+          </Button>
+
           <Button 
             variant="outline" 
             size="sm" 
@@ -174,7 +185,7 @@ export default function CodeCanvas() {
             onClick={() => setIsAiOpen(true)}
           >
             <Sparkles className="w-4 h-4 mr-2" />
-            <span className="hidden sm:inline">Ask AI</span>
+            <span className="hidden sm:inline">{language === "es" ? "Preguntar a IA" : "Ask AI"}</span>
           </Button>
           
           <DropdownMenu>
@@ -184,25 +195,25 @@ export default function CodeCanvas() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-48">
-              <DropdownMenuLabel>Project Options</DropdownMenuLabel>
+              <DropdownMenuLabel>{language === "es" ? "Opciones del Proyecto" : "Project Options"}</DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={clearProject} className="text-destructive">
-                <Trash2 className="w-4 h-4 mr-2" /> Clear All Code
+                <Trash2 className="w-4 h-4 mr-2" /> {language === "es" ? "Borrar todo el código" : "Clear All Code"}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setDevice("desktop")}>
-                <Monitor className="w-4 h-4 mr-2" /> Desktop View
+                <Monitor className="w-4 h-4 mr-2" /> {language === "es" ? "Vista Escritorio" : "Desktop View"}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setDevice("tablet")}>
-                <Tablet className="w-4 h-4 mr-2" /> Tablet View
+                <Tablet className="w-4 h-4 mr-2" /> {language === "es" ? "Vista Tablet" : "Tablet View"}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setDevice("mobile")}>
-                <Smartphone className="w-4 h-4 mr-2" /> Mobile View
+                <Smartphone className="w-4 h-4 mr-2" /> {language === "es" ? "Vista Móvil" : "Mobile View"}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
           <Button size="sm" className="bg-primary text-primary-foreground hover:bg-primary/90 hidden sm:flex">
-            <Zap className="w-4 h-4 mr-2" /> Deploy
+            <Zap className="w-4 h-4 mr-2" /> {language === "es" ? "Desplegar" : "Deploy"}
           </Button>
         </div>
       </header>
@@ -288,7 +299,7 @@ export default function CodeCanvas() {
           <div className="mb-3 flex items-center justify-between text-muted-foreground text-xs font-medium uppercase tracking-wider">
             <div className="flex items-center gap-2">
               <Eye className="w-3 h-3" />
-              Live Preview
+              {language === "es" ? "Previsualización en vivo" : "Live Preview"}
             </div>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2 bg-muted/30 px-2 py-1 rounded">
@@ -325,19 +336,22 @@ export default function CodeCanvas() {
         activeTab={activeTab as any}
       />
       
+      {/* Footer */}
+      <Footer language={language} />
+
       {/* Footer Status Bar */}
       <footer className="h-6 border-t border-border bg-card flex items-center justify-between px-3 text-[10px] text-muted-foreground">
         <div className="flex items-center gap-3">
           <span className="flex items-center gap-1">
             <span className="w-2 h-2 rounded-full bg-green-500"></span>
-            Autosave active
+            {language === "es" ? "Autoguardado activo" : "Autosave active"}
           </span>
           <Separator orientation="vertical" className="h-3" />
           <span>Spaces: 2</span>
           <span>UTF-8</span>
         </div>
         <div className="flex items-center gap-3">
-          <span>{layout === "split-v" ? "Vertical Split" : "Horizontal Split"}</span>
+          <span>{layout === "split-v" ? (language === "es" ? "División Vertical" : "Vertical Split") : (language === "es" ? "División Horizontal" : "Horizontal Split")}</span>
           <span>V1.0.0</span>
         </div>
       </footer>

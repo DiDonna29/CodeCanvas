@@ -32,7 +32,6 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  // En Next.js 15, allowedDevOrigins se configura directamente si el validador lo solicita fuera de experimental
   experimental: {
     // Mantener otras opciones experimentales si las hubiera
   },

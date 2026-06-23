@@ -1,4 +1,3 @@
-
 'use server';
 /**
  * @fileOverview An AI assistant for code generation, explanation, and improvement suggestions.
@@ -51,25 +50,25 @@ Based on the user's request and the provided code context, you should perform on
 2. Provide clear, concise explanations for unfamiliar syntax or concepts, avoiding unnecessary jargon.
 3. Suggest improvements or best practices for the code, explaining the reasoning behind your suggestions.
 
-Always prioritize providing directly actionable and high-quality responses. If generating code, wrap it in appropriate markdown code blocks (e.g., \`\`\`html \`\`\`, \`\`\`css \`\`\`, or \`\`\`javascript \`\`\`).
+Always prioritize providing directly actionable and high-quality responses. If generating code, wrap it in appropriate markdown code blocks (e.g., \x60\x60\x60html \x60\x60\x60, \x60\x60\x60css \x60\x60\x60, or \x60\x60\x60javascript \x60\x60\x60).
 
 Here is the current code context from the user's editor:
 
 ---
 HTML Code:
-\`\`\`html
+\x60\x60\x60html
 {{{htmlCode}}}
-\`\`\`
+\x60\x60\x60
 
 CSS Code:
-\`\`\`css
+\x60\x60\x60css
 {{{cssCode}}}
-\`\`\`
+\x60\x60\x60
 
 JavaScript Code:
-\`\`\`javascript
+\x60\x60\x60javascript
 {{{jsCode}}}
-\`\`\`
+\x60\x60\x60
 ---
 
 Active Editor: {{{activeEditor}}}
